@@ -277,3 +277,4 @@ TSWLatexianTemp*
 
 *.out
 *.s
+/.vscode/settings.json

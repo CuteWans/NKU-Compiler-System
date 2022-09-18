@@ -280,7 +280,7 @@ rulesepcolor= \color{ red!20!green!20!blue!20}
 \end{figure}
 
 \section{作业3}
-splint可以得到如下输出
+使用splint可以得到如下输出
 \begin{minted}[linenos,frame=lines]{text}
 Splint 3.1.2a --- May 25 2020
 
@@ -315,6 +315,13 @@ src/static-check.c:7:6: Variable exported but not used outside static-check:
 
 Finished checking --- 7 code warnings
 \end{minted}
+\begin{itemize}
+  \item 在函数f内，返回了指向局部变量loc的指针，可能会导致释放后使用
+  \item 在函数f内，传入的参数x指向的指针*x被写入了局部变量loc的地址，函数返回后访问**x会导致释放后使用
+  \item 在函数h内，未初始化变量i就访问其值
+  \item 在函数h内，变量i类型是无符号整数，只能走$i \geq 0$分支，另一分支无意义
+  \item 在函数firstChar1内，没有对传入指针做检查，可能会导致解引用NULL（此处splint不认为有问题）
+\end{itemize}
 
 \section{作业4}
 
