@@ -1,0 +1,321 @@
+% -*- coding: utf-8 -*-
+%-------------------------designed by zcf--------------
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[left=3.17cm, right=3.17cm, top=2.74cm, bottom=2.74cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx,subfig}
+\usepackage{float}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{enumerate}
+\usepackage{booktabs} %表格
+\usepackage{multirow}
+\usepackage{minted}
+\usepackage{svg}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}  %表格强制换行
+%-------------------------字体设置--------------
+% \usepackage{times} 
+\usepackage{ctex}
+\setCJKmainfont[ItalicFont=Noto Sans CJK SC Bold, BoldFont=Noto Serif CJK SC Black]{Noto Serif CJK SC}
+\newcommand{\yihao}{\fontsize{26pt}{36pt}\selectfont}           % 一号, 1.4 倍行距
+\newcommand{\erhao}{\fontsize{22pt}{28pt}\selectfont}          % 二号, 1.25倍行距
+\newcommand{\xiaoer}{\fontsize{18pt}{18pt}\selectfont}          % 小二, 单倍行距
+\newcommand{\sanhao}{\fontsize{16pt}{24pt}\selectfont}  %三号字
+\newcommand{\xiaosan}{\fontsize{15pt}{22pt}\selectfont}        % 小三, 1.5倍行距
+\newcommand{\sihao}{\fontsize{14pt}{21pt}\selectfont}            % 四号, 1.5 倍行距
+\newcommand{\banxiaosi}{\fontsize{13pt}{19.5pt}\selectfont}    % 半小四, 1.5倍行距
+\newcommand{\xiaosi}{\fontsize{12pt}{18pt}\selectfont}            % 小四, 1.5倍行距
+\newcommand{\dawuhao}{\fontsize{11pt}{11pt}\selectfont}       % 大五号, 单倍行距
+\newcommand{\wuhao}{\fontsize{10.5pt}{15.75pt}\selectfont}    % 五号, 单倍行距
+%-------------------------章节名----------------
+\usepackage{ctexcap} 
+\CTEXsetup[name={,、},number={ \chinese{section}}]{section}
+\CTEXsetup[name={（,）},number={\chinese{subsection}}]{subsection}
+\CTEXsetup[name={,.},number={\arabic{subsubsection}}]{subsubsection}
+%-------------------------页眉页脚--------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\kaishu \leftmark}
+% \chead{}
+\rhead{\kaishu 预习报告}%加粗\bfseries 
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.1pt}  
+\renewcommand{\footrulewidth}{0pt}%去掉横线
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}%标题横线
+\newcommand{\HRulegrossa}{\rule{\linewidth}{1.2mm}}
+%-----------------------伪代码------------------
+\usepackage{algorithm}  
+\usepackage{algorithmicx}  
+\usepackage{algpseudocode}  
+\floatname{algorithm}{Algorithm}  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  
+\renewcommand{\algorithmicensure}{\textbf{Output:}} 
+\usepackage{lipsum}  
+\makeatletter
+\newenvironment{breakablealgorithm}
+  {% \begin{breakablealgorithm}
+  \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+      {\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+      \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+      \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+      \fi
+      \kern2pt\hrule\kern2pt
+     }
+  }{% \end{breakablealgorithm}
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+  \end{center}
+  }
+\makeatother
+%------------------------代码-------------------
+\usepackage{xcolor} 
+\usepackage{listings} 
+\lstset{ 
+breaklines,%自动换行
+basicstyle=\small,
+escapeinside=``,
+keywordstyle=\color{ blue!70} \bfseries,
+commentstyle=\color{red!50!green!50!blue!50},% 
+stringstyle=\ttfamily,% 
+extendedchars=false,% 
+linewidth=\textwidth,% 
+numbers=left,% 
+numberstyle=\tiny \color{blue!50},% 
+frame=trbl% 
+rulesepcolor= \color{ red!20!green!20!blue!20} 
+}
+%------------超链接----------
+\usepackage[colorlinks,linkcolor=black,anchorcolor=blue]{hyperref}
+%------------------------TODO-------------------
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+% for check symbol 
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+%------------------------水印-------------------
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{eso-pic}
+
+\newcommand{\watermark}[3]{\AddToShipoutPictureBG{
+\parbox[b][\paperheight]{\paperwidth}{
+\vfill%
+\centering%
+\tikz[remember picture, overlay]%
+  \node [rotate = #1, scale = #2] at (current page.center)%
+    {\textcolor{gray!80!cyan!30!magenta!30}{#3}};
+\vfill}}}
+
+%———————————————————————————————————————————正文———————————————————————————————————————————————
+%----------------------------------------------
+\begin{document}
+\begin{titlepage}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{figure/NKU.png}\\[1cm]
+    \textsc{\Huge \kaishu{\textbf{南\ \ \ \ \ \ 开\ \ \ \ \ \ 大\ \ \ \ \ \ 学}} }\\[0.9cm]
+    \textsc{\huge \kaishu{\textbf{计\ \ 算\ \ 机\ \ 学\ \ 院}}}\\[0.5cm]
+    % \textsc{\Large \textbf{预习报告}}\\[0.8cm]
+    \HRule \\[0.9cm]
+    { \LARGE \bfseries 预习报告}\\[0.4cm]
+    \HRule \\[2.0cm]
+    \centering
+    \textsc{\LARGE 丁屹\kaishu{\ \ \ \ }}\\[0.5cm]
+    \textsc{\LARGE \kaishu{年级\ :\ 2020级}}\\[0.5cm]
+    \textsc{\LARGE \kaishu{专业\ :\ 计算机科学与技术}}\\[0.5cm]
+    % \textsc{\LARGE \kaishu{指导教师\ :\ XX}}\\[0.5cm]
+    \vfill
+    {\Large \today}
+  \end{center}
+\end{titlepage}
+%-------------摘------要--------------
+\newpage
+\thispagestyle{empty}
+\renewcommand{\abstractname}{\kaishu \sihao \textbf{摘要}}
+\begin{abstract}
+
+  \noindent  %顶格
+  \textbf{\\\ 关键字：XX、YY、ZZ}\textbf{} \\\ \\\
+\end{abstract}
+%----------------------------------------------------------------
+\tableofcontents
+%----------------------------------------------------------------
+\newpage
+\watermark{60}{10}{NKU}
+\setcounter{page}{1}
+
+\section{作业1}
+
+对于以下两种代码，选择 LOOP \#2 可以得到更快的执行速度。
+
+\begin{minted}[linenos,frame=lines]{c}
+  /* LOOP #1 */
+  int i;
+  for (i = 0; i < N; ++i) {
+    a[i] *= 2000;
+    a[i] /= 10000;
+  }
+\end{minted}
+
+\begin{minted}[linenos,frame=lines]{c}
+  /* LOOP #2 */
+  int* b = a;
+  int  i;
+  for (i = 0; i < N; ++i) {
+    *b *= 2000;
+    *b /= 10000;
+    ++b;
+  }
+\end{minted}
+
+在x86\_64 CPU，Arch Linux系统使用GCC 12.2.0编译器测试，其中N取值1000000000，取4次用时的平均值，计时器使用clock\_gettime(CLOCK\_MONOTONIC, \&ts)，代码位于src/loop1.c与src/loop2.c。
+
+如果不打开-O优化，可以得到 LOOP \#1 平均用时 5049361472 ns，得到 LOOP \#2 平均用时 2849261662 ns。LOOP \#2速度更快。
+
+\begin{minted}[linenos,frame=lines]{ASM}
+  a:
+    .zero   4000000000
+  main:
+    push    rbp
+    mov     rbp, rsp
+    mov     DWORD PTR [rbp-4], 0
+    jmp     .L2
+  .L3:
+    mov     eax, DWORD PTR [rbp-4]
+    cdqe
+    mov     eax, DWORD PTR a[0+rax*4]
+    imul    edx, eax, 2000
+    mov     eax, DWORD PTR [rbp-4]
+    cdqe
+    mov     DWORD PTR a[0+rax*4], edx
+    mov     eax, DWORD PTR [rbp-4]
+    cdqe
+    mov     eax, DWORD PTR a[0+rax*4]
+    movsx   rdx, eax
+    imul    rdx, rdx, 1759218605
+    shr     rdx, 32
+    sar     edx, 12
+    sar     eax, 31
+    sub     edx, eax
+    mov     eax, DWORD PTR [rbp-4]
+    cdqe
+    mov     DWORD PTR a[0+rax*4], edx
+    add     DWORD PTR [rbp-4], 1
+  .L2:
+    cmp     DWORD PTR [rbp-4], 999999999
+    jle     .L3
+    mov     eax, 0
+    pop     rbp
+    ret
+\end{minted}
+
+\begin{minted}[linenos,frame=lines]{ASM}
+  a:
+    .zero   4000000000
+  main:
+    push    rbp
+    mov     rbp, rsp
+    mov     QWORD PTR [rbp-8], OFFSET FLAT:a
+    mov     DWORD PTR [rbp-12], 0
+    jmp     .L2
+  .L3:
+    mov     rax, QWORD PTR [rbp-8]
+    mov     eax, DWORD PTR [rax]
+    imul    edx, eax, 2000
+    mov     rax, QWORD PTR [rbp-8]
+    mov     DWORD PTR [rax], edx
+    mov     rax, QWORD PTR [rbp-8]
+    mov     eax, DWORD PTR [rax]
+    movsx   rdx, eax
+    imul    rdx, rdx, 1759218605
+    shr     rdx, 32
+    sar     edx, 12
+    sar     eax, 31
+    sub     edx, eax
+    mov     rax, QWORD PTR [rbp-8]
+    mov     DWORD PTR [rax], edx
+    add     QWORD PTR [rbp-8], 4
+    add     DWORD PTR [rbp-12], 1
+  .L2:
+    cmp     DWORD PTR [rbp-12], 999999999
+    jle     .L3
+    mov     eax, 0
+    pop     rbp
+    ret
+\end{minted}
+
+比较二者的汇编代码可以发现主要的区别在于：LOOP \#1在每次访问数组时都会计算0+rax*4，做下标转换；而LOOP \#2中每次只对指针[rbp-8]+4，计算量更小。
+
+如果开启-O2优化，可以得到 LOOP \#1 平均用时 1652242168 ns，得到 LOOP \#2 平均用时 1664580829 ns。可以认为LOOP \#1与LOOP \#2没有性能差距。此时二者汇编代码没有区别，优化为使用SIMD超标量技术加速。
+
+\section{作业2}
+分词
+\begin{itemize}
+  \item Model (field)
+  \item = (boolean operator)
+  \item " (string begin)
+  \item Civic (string content)
+  \item " (string end)
+  \item AND (boolean operator)
+  \item Year (field)
+  \item = (boolean operator)
+  \item " (string begin)
+  \item 2001 (string content)
+  \item " (string end)
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includesvg[width=\textwidth]{figure/syntax.svg}
+  \caption{语法分析树}
+\end{figure}
+
+\section{作业3}
+splint可以得到如下输出
+\begin{minted}[linenos,frame=lines]{text}
+Splint 3.1.2a --- May 25 2020
+
+src/static-check.c: (in function f)
+src/static-check.c:13:10: Stack-allocated storage &loc reachable from return
+                             value: &loc
+  A stack reference is pointed to by an external reference when the function
+  returns. The stack-allocated storage is destroyed after the call, leaving a
+  dangling reference. (Use -stackref to inhibit warning)
+src/static-check.c:13:10: Immediate address &loc returned as implicitly only:
+                             &loc
+  An immediate address (result of & operator) is transferred inconsistently.
+  (Use -immediatetrans to inhibit warning)
+src/static-check.c:13:15: Stack-allocated storage *x reachable from parameter x
+   src/static-check.c:12:3: Storage *x becomes stack-allocated storage
+src/static-check.c:13:15: Function returns with global glob referencing
+                             released storage
+  A global variable does not satisfy its annotations when control is
+  transferred. (Use -globstate to inhibit warning)
+   src/static-check.c:13:10: Storage glob released
+src/static-check.c: (in function h)
+src/static-check.c:18:7: Comparison of unsigned value involving zero: i >= 0
+  An unsigned value is used in a comparison with zero in a way that is either a
+  bug or confusing. (Use -unsignedcompare to inhibit warning)
+src/static-check.c:18:7: Variable i used before definition
+  An rvalue is used that may not be initialized to a value on some execution
+  path. (Use -usedef to inhibit warning)
+src/static-check.c:7:6: Variable exported but not used outside static-check:
+                           glob
+  A declaration is exported, but not used outside this module. Declaration can
+  use static qualifier. (Use -exportlocal to inhibit warning)
+
+Finished checking --- 7 code warnings
+\end{minted}
+
+\section{作业4}
+
+\end{document}
