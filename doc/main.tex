@@ -37,7 +37,7 @@
 \pagestyle{fancy}
 \lhead{\kaishu \leftmark}
 % \chead{}
-\rhead{\kaishu 预习报告}%加粗\bfseries 
+\rhead{\kaishu 预备工作1}%加粗\bfseries 
 \lfoot{}
 \cfoot{\thepage}
 \rfoot{}
@@ -126,7 +126,7 @@ rulesepcolor= \color{ red!20!green!20!blue!20}
     \textsc{\huge \kaishu{\textbf{计\ \ 算\ \ 机\ \ 学\ \ 院}}}\\[0.5cm]
     % \textsc{\Large \textbf{预习报告}}\\[0.8cm]
     \HRule \\[0.9cm]
-    { \LARGE \bfseries 预习报告}\\[0.4cm]
+    { \LARGE \bfseries 预备工作1}\\[0.4cm]
     \HRule \\[2.0cm]
     \centering
     \textsc{\LARGE 丁屹\kaishu{\ \ \ \ }}\\[0.5cm]
@@ -138,14 +138,14 @@ rulesepcolor= \color{ red!20!green!20!blue!20}
   \end{center}
 \end{titlepage}
 %-------------摘------要--------------
-% \newpage
-% \thispagestyle{empty}
-% \renewcommand{\abstractname}{\kaishu \sihao \textbf{摘要}}
-% \begin{abstract}
+\newpage
+\thispagestyle{empty}
+\renewcommand{\abstractname}{\kaishu \sihao \textbf{摘要}}
+\begin{abstract}
 
-%   \noindent  %顶格
-%   \textbf{\\\ 关键字：XX、YY、ZZ}\textbf{} \\\ \\\
-% \end{abstract}
+  \noindent  %顶格
+  \textbf{\\\ 关键字：XX、YY、ZZ}\textbf{} \\\ \\\
+\end{abstract}
 %----------------------------------------------------------------
 \tableofcontents
 %----------------------------------------------------------------
@@ -153,181 +153,12 @@ rulesepcolor= \color{ red!20!green!20!blue!20}
 \watermark{60}{10}{NKU}
 \setcounter{page}{1}
 
-\section{作业1}
+\section{预处理器的工作}
 
-对于以下两种代码，选择 LOOP \#2 可以得到更快的执行速度。
+\section{编译器的工作}
 
-\begin{minted}[linenos,frame=lines]{c}
-  /* LOOP #1 */
-  int i;
-  for (i = 0; i < N; ++i) {
-    a[i] *= 2000;
-    a[i] /= 10000;
-  }
-\end{minted}
+\section{汇编器的工作}
 
-\begin{minted}[linenos,frame=lines]{c}
-  /* LOOP #2 */
-  int* b = a;
-  int  i;
-  for (i = 0; i < N; ++i) {
-    *b *= 2000;
-    *b /= 10000;
-    ++b;
-  }
-\end{minted}
-
-在x86\_64 CPU，Arch Linux系统使用GCC 12.2.0编译器测试，其中N取值1000000000，取4次用时的平均值，计时器使用clock\_gettime(CLOCK\_MONOTONIC, \&ts)，代码位于src/loop1.c与src/loop2.c。
-
-如果不打开-O优化，可以得到 LOOP \#1 平均用时 5049361472 ns，得到 LOOP \#2 平均用时 2849261662 ns。LOOP \#2速度更快。
-
-\begin{minted}[linenos,frame=lines]{ASM}
-  a:
-    .zero   4000000000
-  main:
-    push    rbp
-    mov     rbp, rsp
-    mov     DWORD PTR [rbp-4], 0
-    jmp     .L2
-  .L3:
-    mov     eax, DWORD PTR [rbp-4]
-    cdqe
-    mov     eax, DWORD PTR a[0+rax*4]
-    imul    edx, eax, 2000
-    mov     eax, DWORD PTR [rbp-4]
-    cdqe
-    mov     DWORD PTR a[0+rax*4], edx
-    mov     eax, DWORD PTR [rbp-4]
-    cdqe
-    mov     eax, DWORD PTR a[0+rax*4]
-    movsx   rdx, eax
-    imul    rdx, rdx, 1759218605
-    shr     rdx, 32
-    sar     edx, 12
-    sar     eax, 31
-    sub     edx, eax
-    mov     eax, DWORD PTR [rbp-4]
-    cdqe
-    mov     DWORD PTR a[0+rax*4], edx
-    add     DWORD PTR [rbp-4], 1
-  .L2:
-    cmp     DWORD PTR [rbp-4], 999999999
-    jle     .L3
-    mov     eax, 0
-    pop     rbp
-    ret
-\end{minted}
-
-\begin{minted}[linenos,frame=lines]{ASM}
-  a:
-    .zero   4000000000
-  main:
-    push    rbp
-    mov     rbp, rsp
-    mov     QWORD PTR [rbp-8], OFFSET FLAT:a
-    mov     DWORD PTR [rbp-12], 0
-    jmp     .L2
-  .L3:
-    mov     rax, QWORD PTR [rbp-8]
-    mov     eax, DWORD PTR [rax]
-    imul    edx, eax, 2000
-    mov     rax, QWORD PTR [rbp-8]
-    mov     DWORD PTR [rax], edx
-    mov     rax, QWORD PTR [rbp-8]
-    mov     eax, DWORD PTR [rax]
-    movsx   rdx, eax
-    imul    rdx, rdx, 1759218605
-    shr     rdx, 32
-    sar     edx, 12
-    sar     eax, 31
-    sub     edx, eax
-    mov     rax, QWORD PTR [rbp-8]
-    mov     DWORD PTR [rax], edx
-    add     QWORD PTR [rbp-8], 4
-    add     DWORD PTR [rbp-12], 1
-  .L2:
-    cmp     DWORD PTR [rbp-12], 999999999
-    jle     .L3
-    mov     eax, 0
-    pop     rbp
-    ret
-\end{minted}
-
-比较二者的汇编代码可以发现主要的区别在于：LOOP \#1在每次访问数组时都会计算0+rax*4，做下标转换；而LOOP \#2中每次只对指针[rbp-8]+4，计算量更小。
-
-如果开启-O2优化，可以得到 LOOP \#1 平均用时 1652242168 ns，得到 LOOP \#2 平均用时 1664580829 ns。可以认为LOOP \#1与LOOP \#2没有性能差距。此时二者汇编代码没有区别，优化为使用SIMD超标量技术加速。
-
-\section{作业2}
-分词
-\begin{itemize}
-  \item Model (field)
-  \item = (boolean operator)
-  \item " (string begin)
-  \item Civic (string content)
-  \item " (string end)
-  \item AND (boolean operator)
-  \item Year (field)
-  \item = (boolean operator)
-  \item " (string begin)
-  \item 2001 (string content)
-  \item " (string end)
-\end{itemize}
-
-\begin{figure}[H]
-  \centering
-  \includesvg[width=\textwidth]{figure/syntax.svg}
-  \caption{语法分析树}
-\end{figure}
-
-\section{作业3}
-使用splint可以得到如下输出
-\begin{minted}[linenos,frame=lines]{text}
-Splint 3.1.2a --- May 25 2020
-
-src/static-check.c: (in function f)
-src/static-check.c:13:10: Stack-allocated storage &loc reachable from return
-                             value: &loc
-  A stack reference is pointed to by an external reference when the function
-  returns. The stack-allocated storage is destroyed after the call, leaving a
-  dangling reference. (Use -stackref to inhibit warning)
-src/static-check.c:13:10: Immediate address &loc returned as implicitly only:
-                             &loc
-  An immediate address (result of & operator) is transferred inconsistently.
-  (Use -immediatetrans to inhibit warning)
-src/static-check.c:13:15: Stack-allocated storage *x reachable from parameter x
-   src/static-check.c:12:3: Storage *x becomes stack-allocated storage
-src/static-check.c:13:15: Function returns with global glob referencing
-                             released storage
-  A global variable does not satisfy its annotations when control is
-  transferred. (Use -globstate to inhibit warning)
-   src/static-check.c:13:10: Storage glob released
-src/static-check.c: (in function h)
-src/static-check.c:18:7: Comparison of unsigned value involving zero: i >= 0
-  An unsigned value is used in a comparison with zero in a way that is either a
-  bug or confusing. (Use -unsignedcompare to inhibit warning)
-src/static-check.c:18:7: Variable i used before definition
-  An rvalue is used that may not be initialized to a value on some execution
-  path. (Use -usedef to inhibit warning)
-src/static-check.c:7:6: Variable exported but not used outside static-check:
-                           glob
-  A declaration is exported, but not used outside this module. Declaration can
-  use static qualifier. (Use -exportlocal to inhibit warning)
-
-Finished checking --- 7 code warnings
-\end{minted}
-\begin{itemize}
-  \item 在函数f内，返回了指向局部变量loc的指针，可能会导致释放后使用
-  \item 在函数f内，传入的参数x指向的指针*x被写入了局部变量loc的地址，函数返回后访问**x会导致释放后使用
-  \item 在函数h内，未初始化变量i就访问其值
-  \item 在函数h内，变量i类型是无符号整数，只能走$i \geq 0$分支，另一分支无意义
-  \item 在函数firstChar1内，没有对传入指针做检查，可能会导致解引用NULL（此处splint不认为有问题）
-\end{itemize}
-
-\section{作业4}
-\begin{enumerate}
-  \item int a;是变量声明
-  \item int a;中a是标识符列表
-  \item 若a是标识符列表，则a, b也是标识符列表
-\end{enumerate}
+\section{链接器的工作}
 
 \end{document}
