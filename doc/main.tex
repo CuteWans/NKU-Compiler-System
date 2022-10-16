@@ -168,6 +168,9 @@ rulesepcolor= \color{ red!20!green!20!blue!20}
   \item 逻辑表达式：支持逻辑与或
   \item 函数
 \end{enumerate}
+
+其中，卢麒萱负责 4、5、6、7、8、9、10 的 CFG 设计，并编写了一个涵盖部分特性的简单 ARM 汇编程序；丁屹负责 1、2、3 的 CFG设计，并编写了一个涵盖了所有特性的复杂 ARM 汇编程序。
+
 \section{CFG 描述}
 \subsection{标识符及数字}
 \begin{gather*}
@@ -280,7 +283,18 @@ logical\_expr 为逻辑表达式，unary\_expr 为一元表达式，assign\_expr
 为满足上述选定语言特性，我们二人分别设计了两个SysY程序，涵盖了我们定义的所有语言特性。这里使用了标准库的scanf、printf，后续实现SysY时会替换成syslib的I/O函数。
 
 \subsection{卢麒萱的工作}
-
+我设计的程序包含:
+\begin{enumerate}
+  \item int、float 类型变量声明、int 类型常量类型
+  \item float 类型数组声明
+  \item 赋值语句
+  \item 复合语句
+  \item if 分支语句
+  \item for 循环语句
+  \item 包含乘法的算术表达式
+  \item 包含等于、大于的关系运算表达式
+  \item 函数
+\end{enumerate}
 编写的SysY示例程序如下：
 
 \begin{minted}[linenos,frame=lines]{c}
@@ -309,7 +323,7 @@ int main() {
 }
 \end{minted}
 
-编写对应 ARM 汇编代码如下：
+编写对应 ARM 汇编代码及注释如下，这里的循环恰好可以展开，使用NEON指令SIMD化。
 \begin{minted}[linenos,frame=lines]{gas}
   .arch armv7-a
   .fpu vfpv3-d16
@@ -385,7 +399,7 @@ main:
 .LPIC2:
   add  r3, pc
   mov  r0, r3
-  bl  __isoc99_scanf
+  bl  scanf
   movs  r3, #0
   str  r3, [fp, #4]
   ldr  r3, ._bridge+12
@@ -476,7 +490,9 @@ main:
 
 \subsection{丁屹的工作}
 
-编写的SysY示例程序如下：
+编写的SysY示例程序如下，包含在开头列举的所有语言特性，使用了计算斐波那契数列的代码加以扩展。fib函数计算n步以后的斐波那契数，
+a，b指针指向的变量保存最后两个斐波那契数，中间计算步骤保存在全局静态trace数组中。程序会向标准输入读取初始两个斐波那契数，计算步长固定为10。最后会向标准输出打印最后两个斐波那契数的和差积商以及按位与或的结果和计算步骤。
+
 \begin{minted}[linenos,frame=lines]{c}
 #include <stdio.h>
 
@@ -524,7 +540,7 @@ int main() {
 }
 \end{minted}
 
-编写对应 ARM 汇编代码如下：
+编写对应 ARM 汇编代码及注释如下：
 \begin{minted}[linenos,frame=lines]{gas}
 .arch armv7-a
 .fpu vfpv3-d16
