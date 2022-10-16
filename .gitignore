@@ -274,3 +274,11 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+.vscode
+*.c
+*.o
+*.exec
+*x86*
+*.0
+*.core
