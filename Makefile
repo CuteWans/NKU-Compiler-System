@@ -1,4 +1,6 @@
-.PHONY: clean
+.PHONY: all clean
+
+all: myyacc in2post
 
 myyacc: myyacc.y
 	bison myyacc.y
