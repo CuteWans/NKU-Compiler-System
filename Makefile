@@ -8,11 +8,11 @@ SRC ?= src
 all: $(BUILD)/scanner
 
 $(BUILD)/scanner: $(BUILD)/lex.yy.c $(SRC)/token.h
-	gcc -O3 -o$@ -I$(SRC) $<
+	$(CC) -O3 -o$@ -I$(SRC) $<
 
 $(BUILD)/lex.yy.c: $(SRC)/scanner.l
 	mkdir -p -- $(BUILD)
-	flex -o$@ $<
+	$(LEX) -o$@ $<
 
 clean:
 	rm -rf -- $(BUILD)
