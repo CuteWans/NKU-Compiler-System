@@ -2,17 +2,17 @@
 
 CC ?= gcc
 LEX ?= flex
-BUILD ?= build
+BUILD_PREFIX ?= build
 SRC ?= src
 
-all: $(BUILD)/scanner
+all: $(BUILD_PREFIX)/scanner
 
-$(BUILD)/scanner: $(BUILD)/lex.yy.c $(SRC)/token.h
+$(BUILD_PREFIX)/scanner: $(BUILD_PREFIX)/lex.yy.c $(SRC)/token.h
 	$(CC) -O3 -I$(SRC) -o$@ $<
 
-$(BUILD)/lex.yy.c: $(SRC)/scanner.l
-	mkdir -p -- $(BUILD)
+$(BUILD_PREFIX)/lex.yy.c: $(SRC)/scanner.l
+	mkdir -p -- $(BUILD_PREFIX)
 	$(LEX) -o$@ $<
 
 clean:
-	rm -rf -- $(BUILD)
+	rm -rf -- $(BUILD_PREFIX)
