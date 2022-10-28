@@ -5,20 +5,23 @@ void init_scanner();
 void lex_error(char* msg, int line);
 %}
 
-INTEGER             ([0-9]+)
+INT                 ([+-]?([0-9]+))
+FLOAT               ([+-]?(([0-9]*\.[0-9]+)|([0-9]+[eE][+-]?[0-9]+)))
 UNTERM_STRING       (\"[^\"\n]*)
 STRING              (\"[^\"\n]*\")
 IDENTIFIER          ([_a-zA-Z][_a-zA-Z0-9]*)
-OPERATOR            ([+*-/%=,;!<>(){}])
-SINGLE_COMMENT      ("//"[^\n]*)
+SINGLE_OPERATOR     ([&+*-/%=,;!<>()\[\]{}])
+LINE_COMMENT        ("//"[^\n]*)
 PP_COMMENT          ("#"[^\n]*)
+NEWLINE             (\n)
+WHITESPACE          ([ \t\r\a]+)
 %%
 
-[\n]                { ++cur_line_num;                                     }
-[ \t\r\a]+          { /* ignore all spaces */                             }
-{SINGLE_COMMENT}    { /* skip for single line comment */                  }
-{PP_COMMENT}        { /* skip for preprocessor line comment */            }
-{OPERATOR}          { return yytext[0];                                   }   
+{NEWLINE}           { ++cur_line_num;                                     }
+{WHITESPACE}        { /* ignore all spaces */                             }
+{LINE_COMMENT}      { /* skip for single line comment */                  }
+{PP_COMMENT}        { /* skip for preprocessor comment */                 }
+{SINGLE_OPERATOR}   { return yytext[0];                                   }   
 
 "<="                { return LE;                                          }
 ">="                { return GE;                                          }
@@ -28,14 +31,18 @@ PP_COMMENT          ("#"[^\n]*)
 "||"                { return OR;                                          }
 "void"              { return VOID;                                        }
 "int"               { return INT;                                         }
+"float"             { return FLOAT;                                       }
+"do"                { return DO;                                          }
 "while"             { return WHILE;                                       }
+"for"               { return FOR;                                         }
 "if"                { return IF;                                          }
 "else"              { return ELSE;                                        }
 "return"            { return RETURN;                                      }
 "break"             { return BREAK;                                       }
 "continue"          { return CONTINUE;                                    }
 
-{INTEGER}           { return INT_CONST;                                   }
+{INT}               { return INT_CONST;                                   }
+{FLOAT}             { return FLOAT_CONST;                                 }
 {STRING}            { return STR_CONST;                                   }
 {IDENTIFIER}        { return IDENTIFIER;                                  }
 
@@ -56,8 +63,8 @@ signed main(int argc, char* argv[]) {
 }
 
 void init_scanner() {
-  printf("%-20s%s\n", "TOKEN-TYPE", "TOKEN-VALUE");
-  printf("-------------------------------------------------\n");
+  printf("%-20s%-40s%-20s\n", "TOKEN-TYPE", "TOKEN-VALUE", "TOKEN_ATTR");
+  puts("--------------------------------------------------------------------------------");
 }
 
 void lex_error(char* msg, int line) {
