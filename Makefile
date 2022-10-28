@@ -7,7 +7,7 @@ SRC ?= src
 
 all: $(BUILD_PREFIX)/scanner
 
-$(BUILD_PREFIX)/scanner: $(BUILD_PREFIX)/lex.yy.c $(SRC)/token.h
+$(BUILD_PREFIX)/scanner: $(BUILD_PREFIX)/lex.yy.c $(SRC)/token.h $(SRC)/list.h $(SRC)/symbol_table.h
 	$(CC) -O3 -I$(SRC) -o$@ $<
 
 $(BUILD_PREFIX)/lex.yy.c: $(SRC)/scanner.l

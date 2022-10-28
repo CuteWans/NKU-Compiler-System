@@ -1,8 +1,14 @@
 %{
+#include <stdlib.h>
+
+#include "symbol_table.h"
 #include "token.h"
 int cur_line_num = 1;
-void init_scanner();
+void scanner_init();
+void scanner_cleanup();
 void lex_error(char* msg, int line);
+symbol_t* symbol_table;
+long long cur_token_attr;
 %}
 
 INT                 ([+-]?([0-9]+))
@@ -41,10 +47,27 @@ WHITESPACE          ([ \t\r\a]+)
 "break"             { return BREAK;                                       }
 "continue"          { return CONTINUE;                                    }
 
-{INT}               { return INT_CONST;                                   }
-{FLOAT}             { return FLOAT_CONST;                                 }
+{INT}               {
+                      cur_token_attr = atoi(yytext);
+                      return INT_CONST;
+                    }
+{FLOAT}             {
+                      double temp = atof(yytext);
+                      cur_token_attr = *((long long*) &temp);
+                      return FLOAT_CONST;
+                    }
 {STRING}            { return STR_CONST;                                   }
-{IDENTIFIER}        { return IDENTIFIER;                                  }
+{IDENTIFIER}        {
+                      symbol_t* symb = symbol_get(symbol_table, yytext);
+                      if (symb == NULL) {
+                        symb = malloc(sizeof(symbol_t));
+                        symb->type = 0;
+                        strncpy(symb->name, yytext, MX_ID_LENGTH);
+                        symbol_insert(symbol_table, symb);
+                      }
+                      cur_token_attr = symb;
+                      return IDENTIFIER;
+                    }
 
 <<EOF>>             { return 0;                                           }
 
@@ -54,17 +77,26 @@ WHITESPACE          ([ \t\r\a]+)
 %%
 
 signed main(int argc, char* argv[]) {
-  init_scanner();
+  scanner_init();
   int token;
   while (token = yylex()) {
     print_token(token);
-    puts(yytext);
+    printf("%-40s", yytext);
+    if (token == IDENTIFIER || token == INT_CONST || token == FLOAT_CONST)
+      printf("%-20lld\n", cur_token_attr);
+    else puts("");
   }
+  scanner_cleanup();
 }
 
-void init_scanner() {
+void scanner_init() {
+  symbol_table = symbol_init();
   printf("%-20s%-40s%-20s\n", "TOKEN-TYPE", "TOKEN-VALUE", "TOKEN_ATTR");
   puts("--------------------------------------------------------------------------------");
+}
+
+void scanner_cleanup() {
+  symbol_destory(symbol_table);
 }
 
 void lex_error(char* msg, int line) {

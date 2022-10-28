@@ -1,9 +1,9 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-typedef struct {
-  list_entry_t* prev;
-  list_entry_t* next;
+typedef struct list_entry_s {
+  struct list_entry_s* prev;
+  struct list_entry_s* next;
 } list_entry_t;
 
 static inline void list_insert_(list_entry_t* elm, list_entry_t* prev,
