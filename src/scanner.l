@@ -63,6 +63,7 @@ WHITESPACE          ([ \t\r\a]+)
                         symb = malloc(sizeof(symbol_t));
                         symb->type = 0;
                         strncpy(symb->name, yytext, MX_ID_LENGTH);
+                        symb->name[MX_ID_LENGTH] = '\0';
                         symbol_insert(symbol_table, symb);
                       }
                       cur_token_attr = symb;
