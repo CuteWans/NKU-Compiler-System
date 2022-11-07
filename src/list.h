@@ -6,7 +6,7 @@ typedef struct list_entry_s {
   struct list_entry_s* next;
 } list_entry_t;
 
-static inline void list_insert_(list_entry_t* elm, list_entry_t* prev,
+static inline void _list_insert(list_entry_t* elm, list_entry_t* prev,
                                 list_entry_t* next) {
   prev->next = next->prev = elm;
 
@@ -14,7 +14,7 @@ static inline void list_insert_(list_entry_t* elm, list_entry_t* prev,
   elm->prev = prev;
 }
 
-static inline void list_remove_(list_entry_t* prev, list_entry_t* next) {
+static inline void _list_remove(list_entry_t* prev, list_entry_t* next) {
   prev->next = next;
   next->prev = prev;
 }
@@ -24,11 +24,11 @@ static inline void list_init(list_entry_t* elm) {
 }
 
 static inline void list_insert_before(list_entry_t* list, list_entry_t* elm) {
-  list_insert_(elm, list->prev, list);
+  _list_insert(elm, list->prev, list);
 }
 
 static inline void list_insert_after(list_entry_t* list, list_entry_t* elm) {
-  list_insert_(elm, list, list->next);
+  _list_insert(elm, list, list->next);
 }
 
 static inline void list_insert(list_entry_t* list, list_entry_t* elm) {
@@ -36,7 +36,7 @@ static inline void list_insert(list_entry_t* list, list_entry_t* elm) {
 }
 
 static inline void list_remove(list_entry_t* elm) {
-  list_remove_(elm->prev, elm->next);
+  _list_remove(elm->prev, elm->next);
 }
 
 static inline void list_remove_init(list_entry_t* elm) {
