@@ -1,0 +1,12 @@
+int a;
+const int b = 3;
+int func(int p,int q,int r){
+	p = (p - 1)+1;
+	return p;
+}
+int main(){
+	int a,b,c;
+	c = func(1+1,b,c);
+	a = 10;
+	return b;
+}

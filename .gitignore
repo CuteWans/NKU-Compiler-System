@@ -278,3 +278,9 @@ TSWLatexianTemp*
 test
 build
 .vscode
+
+lexer.cpp
+parser.cpp
+parser.h
+*.ast
+*.toks
