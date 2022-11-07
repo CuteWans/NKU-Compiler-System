@@ -1,5 +1,5 @@
 SRC_PATH ?= src
-INC_PATH += include
+INC_PATH += inc
 BUILD_PATH ?= build
 TEST_PATH ?= test
 OBJ_PATH ?= $(BUILD_PATH)/obj

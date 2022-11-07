@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include "Ast.h"
+#include "SymbolTable.h"
+#include "Type.h"
 using namespace std;
 
 Ast          ast;
