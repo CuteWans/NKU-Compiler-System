@@ -3,27 +3,37 @@
 
 #include <fstream>
 
-#include "Type.h"
-
 class SymbolEntry;
 
 class Node {
 private:
   static int counter;
   int        seq;
+  Node*      next;
 
 public:
   Node();
   int          getSeq() const { return seq; };
   virtual void output(int level) = 0;
+  void         setNext(Node* node);
+  Node*        getNext() { return next; }
 };
 
 class ExprNode : public Node {
+private:
+  int kind;
+
 protected:
   SymbolEntry* symbolEntry;
+  enum { EXPR, INITVALUELISTEXPR };
 
 public:
-  ExprNode(SymbolEntry* symbolEntry) : symbolEntry(symbolEntry){};
+  ExprNode(SymbolEntry* symbolEntry, int kind = EXPR)
+    : kind(kind), symbolEntry(symbolEntry){};
+  void         output(int level);
+  virtual int  getValue() { return 0; };
+  bool         isExpr() const { return kind == EXPR; };
+  SymbolEntry* getSymbolEntry() const { return symbolEntry; };
 };
 
 class BinaryExpr : public ExprNode {
@@ -41,26 +51,38 @@ public:
     AND,
     OR,
     LESS,
-    MORE,
-    LESSE,
-    MOREE,
+    LESSEQUAL,
+    GREATER,
+    GREATEREQUAL,
     EQUAL,
-    NEQUAL
+    NOTEQUAL
   };
   BinaryExpr(SymbolEntry* se, int op, ExprNode* expr1, ExprNode* expr2)
     : ExprNode(se), op(op), expr1(expr1), expr2(expr2){};
   void output(int level);
+  int  getValue();
 };
 
-class SingleExpr : public ExprNode {
+class UnaryExpr : public ExprNode {
 private:
   int       op;
   ExprNode* expr;
 
 public:
-  enum { ADD, SUB, NO };
-  SingleExpr(SymbolEntry* se, int op, ExprNode* expr)
+  enum { ADD, NOT, SUB };
+  UnaryExpr(SymbolEntry* se, int op, ExprNode* expr)
     : ExprNode(se), op(op), expr(expr){};
+  void output(int level);
+  int  getValue();
+};
+
+class CallExpr : public ExprNode {
+private:
+  ExprNode* param;
+
+public:
+  CallExpr(SymbolEntry* se, ExprNode* param = nullptr)
+    : ExprNode(se), param(param){};
   void output(int level);
 };
 
@@ -68,44 +90,29 @@ class Constant : public ExprNode {
 public:
   Constant(SymbolEntry* se) : ExprNode(se){};
   void output(int level);
+  int  getValue();
 };
 
 class Id : public ExprNode {
+private:
+  ExprNode* arrIdx;
+
 public:
-  Id(SymbolEntry* se) : ExprNode(se){};
-  void output(int level);
+  Id(SymbolEntry* se, ExprNode* arrIdx = nullptr)
+    : ExprNode(se), arrIdx(arrIdx){};
+  void         output(int level);
+  SymbolEntry* getSymbolEntry() { return symbolEntry; };
+  int          getValue();
 };
 
 class StmtNode : public Node { };
-
-class ExpList : public StmtNode {
-private:
-  ExprNode* expr;
-  StmtNode* stmt = nullptr;
-
-public:
-  ExpList(ExprNode* expr, StmtNode* stmt) : expr(expr), stmt(stmt){};
-  ExpList(ExprNode* expr) : expr(expr){};
-  void output(int level);
-};
-
-class FCallStmt : public StmtNode {
-private:
-  Id*       id;
-  StmtNode* stmt = nullptr;
-
-public:
-  FCallStmt(Id* id, StmtNode* stmt) : id(id), stmt(stmt){};
-  FCallStmt(Id* id) : id(id){};
-  void output(int level);
-};
 
 class CompoundStmt : public StmtNode {
 private:
   StmtNode* stmt;
 
 public:
-  CompoundStmt(StmtNode* stmt) : stmt(stmt){};
+  CompoundStmt(StmtNode* stmt = nullptr) : stmt(stmt){};
   void output(int level);
 };
 
@@ -121,21 +128,17 @@ public:
 class DeclStmt : public StmtNode {
 private:
   Id*       id;
-  StmtNode* stmt = NULL;
-
-public:
-  DeclStmt(Id* id) : id(id){};
-  DeclStmt(Id* id, StmtNode* stmt) : id(id), stmt(stmt){};
-  void output(int level);
-};
-
-class ConstDeclStmt : public StmtNode {
-private:
-  Id*       id;
   ExprNode* expr;
 
 public:
-  ConstDeclStmt(Id* id, ExprNode* expr) : id(id), expr(expr){};
+  DeclStmt(Id* id, ExprNode* expr = nullptr) : id(id), expr(expr){};
+  void output(int level);
+  Id*  getId() { return id; };
+};
+
+class BlankStmt : public StmtNode {
+public:
+  BlankStmt(){};
   void output(int level);
 };
 
@@ -164,11 +167,22 @@ public:
 class WhileStmt : public StmtNode {
 private:
   ExprNode* cond;
-  StmtNode* thenStmt;
+  StmtNode* stmt;
 
 public:
-  WhileStmt(ExprNode* cond, StmtNode* thenStmt)
-    : cond(cond), thenStmt(thenStmt){};
+  WhileStmt(ExprNode* cond, StmtNode* stmt) : cond(cond), stmt(stmt){};
+  void output(int level);
+};
+
+class BreakStmt : public StmtNode {
+public:
+  BreakStmt(){};
+  void output(int level);
+};
+
+class ContinueStmt : public StmtNode {
+public:
+  ContinueStmt(){};
   void output(int level);
 };
 
@@ -177,52 +191,38 @@ private:
   ExprNode* retValue;
 
 public:
-  ReturnStmt(ExprNode* retValue) : retValue(retValue){};
+  ReturnStmt(ExprNode* retValue = nullptr) : retValue(retValue){};
   void output(int level);
 };
 
 class AssignStmt : public StmtNode {
 private:
   ExprNode* lval;
-  ExprNode* expr = nullptr;
-  StmtNode* stmt = nullptr;
+  ExprNode* expr;
 
 public:
   AssignStmt(ExprNode* lval, ExprNode* expr) : lval(lval), expr(expr){};
-  AssignStmt(ExprNode* lval, StmtNode* stmt, int i) : lval(lval), stmt(stmt){};
+  void output(int level);
+};
+
+class ExprStmt : public StmtNode {
+private:
+  ExprNode* expr;
+
+public:
+  ExprStmt(ExprNode* expr) : expr(expr){};
   void output(int level);
 };
 
 class FunctionDef : public StmtNode {
 private:
   SymbolEntry* se;
+  DeclStmt*    decl;
   StmtNode*    stmt;
 
 public:
-  FunctionDef(SymbolEntry* se, StmtNode* stmt) : se(se), stmt(stmt){};
-  void output(int level);
-};
-
-class CFunctionDef : public StmtNode {
-private:
-  SymbolEntry* se;
-  StmtNode*    stmt1;
-  StmtNode*    stmt2;
-
-public:
-  CFunctionDef(SymbolEntry* se, StmtNode* stmt1, StmtNode* stmt2)
-    : se(se), stmt1(stmt1), stmt2(stmt2){};
-  void output(int level);
-};
-
-class CallStmt : public StmtNode {
-private:
-  Id*       id;
-  StmtNode* stmt = nullptr;
-
-public:
-  CallStmt(Id* id, StmtNode* stmt) : id(id), stmt(stmt){};
-  CallStmt(Id* id) : id(id){};
+  FunctionDef(SymbolEntry* se, DeclStmt* decl, StmtNode* stmt)
+    : se(se), decl(decl), stmt(stmt){};
   void output(int level);
 };
 

@@ -1,6 +1,8 @@
 #ifndef __SYMBOLTABLE_H__
 #define __SYMBOLTABLE_H__
 
+#include <assert.h>
+
 #include <map>
 #include <string>
 
@@ -34,12 +36,16 @@ public:
 */
 class ConstantSymbolEntry : public SymbolEntry {
 private:
-  int value;
+  int         value;
+  std::string strValue;
 
 public:
   ConstantSymbolEntry(Type* type, int value);
+  ConstantSymbolEntry(Type* type, std::string strValue);
+  ConstantSymbolEntry(Type* type);
   virtual ~ConstantSymbolEntry(){};
-  int         getValue() const { return value; };
+  int         getValue() const;
+  std::string getStrValue() const;
   std::string toStr();
   // You can add any function you need here.
 };
@@ -72,6 +78,9 @@ private:
   enum { GLOBAL, PARAM, LOCAL };
   std::string name;
   int         scope;
+  int         value;
+  bool        initial;
+
   // You can add any field you need here.
 
 public:
@@ -79,6 +88,8 @@ public:
   virtual ~IdentifierSymbolEntry(){};
   std::string toStr();
   int         getScope() const { return scope; };
+  void        setValue(int value);
+  int         getValue() const { return value; };
   // You can add any function you need here.
 };
 

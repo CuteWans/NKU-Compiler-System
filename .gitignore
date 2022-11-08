@@ -278,7 +278,7 @@ TSWLatexianTemp*
 test
 build
 .vscode
-
+misc
 lexer.cpp
 parser.cpp
 parser.h

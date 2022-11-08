@@ -1,17 +1,23 @@
+#include <assert.h>
+
+#include <iostream>
 #include <sstream>
 
 #include "Type.h"
 
-IntType   TypeSystem::commonInt   = IntType(4);
-FloatType TypeSystem::commonFloat = FloatType();
-VoidType  TypeSystem::commonVoid  = VoidType();
+IntType   TypeSystem::commonInt      = IntType(4);
+FloatType TypeSystem::commonFloat    = FloatType();
+IntType   TypeSystem::commonConstInt = IntType(4, true);
+VoidType  TypeSystem::commonVoid     = VoidType();
 
-Type* TypeSystem::intType   = &commonInt;
-Type* TypeSystem::voidType  = &commonVoid;
-Type* TypeSystem::floatType = &commonFloat;
+Type* TypeSystem::intType      = &commonInt;
+Type* TypeSystem::floatType    = &commonFloat;
+Type* TypeSystem::constIntType = &commonConstInt;
+Type* TypeSystem::voidType     = &commonVoid;
 
 std::string IntType::toStr() {
-  return "int";
+  if (constant) return "const int";
+  else return "int";
 }
 
 std::string FloatType::toStr() {
@@ -24,6 +30,14 @@ std::string VoidType::toStr() {
 
 std::string FunctionType::toStr() {
   std::ostringstream buffer;
-  buffer << returnType->toStr() << "()";
+  buffer << returnType->toStr() << "(";
+  bool firstIdx = true;
+  for (const auto& param : paramsType) {
+    if (firstIdx) {
+      buffer << param->toStr();
+      firstIdx = false;
+    } else buffer << ", " << param->toStr();
+  }
+  buffer << ')';
   return buffer.str();
 }

@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "SymbolTable.h"
+#include "Type.h"
 
 SymbolEntry::SymbolEntry(Type* type, int kind) {
   this->type = type;
@@ -13,16 +14,45 @@ ConstantSymbolEntry::ConstantSymbolEntry(Type* type, int value)
   this->value = value;
 }
 
+ConstantSymbolEntry::ConstantSymbolEntry(Type* type, std::string value)
+  : SymbolEntry(type, SymbolEntry::CONSTANT) {
+  this->strValue = value;
+}
+
+ConstantSymbolEntry::ConstantSymbolEntry(Type* type)
+  : SymbolEntry(type, SymbolEntry::CONSTANT) {
+}
+
+int ConstantSymbolEntry::getValue() const {
+  return value;
+}
+
+std::string ConstantSymbolEntry::getStrValue() const {
+  return strValue;
+}
+
 std::string ConstantSymbolEntry::toStr() {
   std::ostringstream buffer;
-  buffer << value;
+  if (type->isInt()) buffer << value;
+  else if (type->isString()) buffer << strValue;
   return buffer.str();
 }
 
 IdentifierSymbolEntry::IdentifierSymbolEntry(Type* type, std::string name,
                                              int scope)
   : SymbolEntry(type, SymbolEntry::VARIABLE), name(name) {
-  this->scope = scope;
+  this->scope   = scope;
+  this->initial = false;
+}
+
+void IdentifierSymbolEntry::setValue(int value) {
+  if (dynamic_cast<IntType*>(this->getType())->isConst()) {
+    if (initial) {
+    } else {
+      this->value   = value;
+      this->initial = true;
+    }
+  } else this->value = value;
 }
 
 std::string IdentifierSymbolEntry::toStr() {
@@ -66,11 +96,12 @@ SymbolTable::SymbolTable(SymbolTable* prev) {
     5. If you can't find it in all symbol tables, return nullptr.
 */
 SymbolEntry* SymbolTable::lookup(std::string name) {
-  SymbolEntry* entry = nullptr;
-  auto         iter  = symbolTable.find(name);
-  if (iter == symbolTable.end()) entry = prev->lookup(name);
-  else return entry = iter->second;
-  return entry;
+  SymbolTable* table = this;
+  while (table != nullptr)
+    if (table->symbolTable.find(name) != table->symbolTable.end())
+      return table->symbolTable[name];
+    else table = table->prev;
+  return nullptr;
 }
 
 // install the entry into current symbol table.
