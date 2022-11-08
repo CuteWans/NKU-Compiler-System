@@ -44,55 +44,6 @@ int main(int argc, char* argv[]) {
     fprintf(stderr, "%s: fail to open output file\n", outfile);
     exit(EXIT_FAILURE);
   }
-  SymbolEntry* selib1 = new IdentifierSymbolEntry(TypeSystem::intType, "getint",
-                                                  identifiers->getLevel());
-  identifiers->install("getint", selib1);
-  SymbolEntry* selib2 = new IdentifierSymbolEntry(TypeSystem::intType, "getch",
-                                                  identifiers->getLevel());
-  identifiers->install("getch", selib2);
-  SymbolEntry* selib3 = new IdentifierSymbolEntry(
-    TypeSystem::floatType, "getfloat", identifiers->getLevel());
-  identifiers->install("getfloat", selib3);
-  SymbolEntry* selib4 = new IdentifierSymbolEntry(
-    TypeSystem::intType, "getarray", identifiers->getLevel());
-  identifiers->install("getarray", selib4);
-  SymbolEntry* selib5 = new IdentifierSymbolEntry(
-    TypeSystem::intType, "getfarray", identifiers->getLevel());
-  identifiers->install("getfarray", selib5);
-
-  SymbolEntry* selib6 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "putint", identifiers->getLevel());
-  identifiers->install("putint", selib6);
-  SymbolEntry* selib7 = new IdentifierSymbolEntry(TypeSystem::voidType, "putch",
-                                                  identifiers->getLevel());
-  identifiers->install("putch", selib7);
-  SymbolEntry* selib8 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "putarray", identifiers->getLevel());
-  identifiers->install("putarray", selib8);
-  SymbolEntry* selib9 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "putfloat", identifiers->getLevel());
-  identifiers->install("putfloat", selib9);
-  SymbolEntry* selib10 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "putfarray", identifiers->getLevel());
-  identifiers->install("putfarray", selib10);
-
-  SymbolEntry* selib11 = new IdentifierSymbolEntry(TypeSystem::voidType, "putf",
-                                                   identifiers->getLevel());
-  identifiers->install("putf", selib11);
-
-  SymbolEntry* selib12 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "before_main", identifiers->getLevel());
-  identifiers->install("before_main", selib12);
-  SymbolEntry* selib13 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "after_main", identifiers->getLevel());
-  identifiers->install("after_main", selib13);
-  SymbolEntry* selib14 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "_sysy_starttime", identifiers->getLevel());
-  identifiers->install("_sysy_starttime", selib14);
-  SymbolEntry* selib15 = new IdentifierSymbolEntry(
-    TypeSystem::voidType, "_sysy_stoptime", identifiers->getLevel());
-  identifiers->install("_sysy_stoptime", selib15);
   yyparse();
   if (dump_ast) ast.output();
-  return 0;
 }

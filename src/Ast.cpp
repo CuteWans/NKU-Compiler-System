@@ -120,15 +120,16 @@ void Constant::output(int level) {
 }
 
 int Constant::getValue() {
-  return ((ConstantSymbolEntry*) symbolEntry)->getValue();
+  return dynamic_cast<ConstantSymbolEntry*>(symbolEntry)->getValue();
 }
 
 int Id::getValue() {
-  return ((IdentifierSymbolEntry*) symbolEntry)->getValue();
+  return dynamic_cast<IdentifierSymbolEntry*>(symbolEntry)->getValue();
 }
 
 void Id::output(int level) {
-  std::string name, type;
+  std::string name;
+  std::string type;
   int         scope;
   name  = symbolEntry->toStr();
   type  = symbolEntry->getType()->toStr();
@@ -140,7 +141,7 @@ void Id::output(int level) {
     int       i    = 0;
     while (temp) {
       temp->output(level + 4 + 4 * i++);
-      temp = (ExprNode*) (temp->getNext());
+      temp = dynamic_cast<ExprNode*>(temp->getNext());
     }
   }
 }
@@ -160,7 +161,7 @@ void DeclStmt::output(int level) {
   fprintf(yyout, "%*cDeclStmt\n", level, ' ');
   id->output(level + 4);
   if (expr) expr->output(level + 4);
-  if (this->getNext()) { this->getNext()->output(level); }
+  if (this->getNext()) this->getNext()->output(level);
 }
 
 void BlankStmt::output(int level) {
@@ -216,6 +217,6 @@ void FunctionDef::output(int level) {
   type = se->getType()->toStr();
   fprintf(yyout, "%*cFunctionDefine\tfunction name: %s\ttype: %s\n", level, ' ',
           name.c_str(), type.c_str());
-  if (decl) { decl->output(level + 4); }
+  if (decl) decl->output(level + 4);
   stmt->output(level + 4);
 }
