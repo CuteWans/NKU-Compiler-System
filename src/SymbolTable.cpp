@@ -67,16 +67,9 @@ SymbolTable::SymbolTable(SymbolTable* prev) {
 */
 SymbolEntry* SymbolTable::lookup(std::string name) {
   SymbolEntry* entry = nullptr;
-  // Todo
-  bool flag = false;
-  for (auto iter = symbolTable.begin(); iter != symbolTable.end(); ++iter) {
-    if (iter->first == name) {
-      flag  = true;
-      entry = iter->second;
-      break;
-    }
-  }
-  if (flag == false) entry = prev->lookup(name);
+  auto         iter  = symbolTable.find(name);
+  if (iter == symbolTable.end()) entry = prev->lookup(name);
+  else return entry = iter->second;
   return entry;
 }
 
