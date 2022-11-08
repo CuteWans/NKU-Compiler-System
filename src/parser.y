@@ -357,7 +357,7 @@ FuncDef
     SymbolEntry* se;
     se = identifiers->lookup($2);
     assert(se != nullptr);
-    $$ = new FunctionDef(se, (DeclStmt*)$5, $8);
+    $$ = new FunctionDef(se, (DeclStmt*) $5, $8);
     SymbolTable* top = identifiers;
     identifiers = identifiers->getPrev();
     delete top;
