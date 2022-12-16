@@ -225,8 +225,6 @@ void BinExpr::genCode() {
     // Todo
     expr1->genCode();
     expr2->genCode();
-    /*Op *src1 = expr1->getOp();
-        Op *src2 = expr2->getOp();*/
     Op *src1, *src2;
     if (expr1->getOp()->getType()->isInt() &&
       expr2->getOp()->getType()->isBool()) {
