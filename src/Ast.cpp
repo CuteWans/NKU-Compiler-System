@@ -124,7 +124,7 @@ void UnaryExpr::genCode() {
     SymbEntry* new_se =
       new TempSymbEntry(src2->getType(), SymbTable::getLabel());
     dst = new Op(new_se);
-    new BinaryInst(BinaryInst::SUB, dst, src1, src2, bb);
+    new BinInst(BinInst::SUB, dst, src1, src2, bb);
   } else if (op == NOT) {
     BasicBlock* bb = builder->getInsertBB();
     expr->genCode();
@@ -140,7 +140,7 @@ void UnaryExpr::genCode() {
   }
 }
 
-void BinaryExpr::genCode() {
+void BinExpr::genCode() {
   BasicBlock* bb = builder->getInsertBB();
   Func* func = bb->getParent();
   if (op == AND) {
@@ -270,13 +270,13 @@ void BinaryExpr::genCode() {
 
     int opcode;
     switch (op) {
-      case ADD : opcode = BinaryInst::ADD; break;
-      case SUB : opcode = BinaryInst::SUB; break;
-      case MUL : opcode = BinaryInst::MUL; break;
-      case DIV : opcode = BinaryInst::DIV; break;
-      case MOD : opcode = BinaryInst::MOD; break;
+      case ADD : opcode = BinInst::ADD; break;
+      case SUB : opcode = BinInst::SUB; break;
+      case MUL : opcode = BinInst::MUL; break;
+      case DIV : opcode = BinInst::DIV; break;
+      case MOD : opcode = BinInst::MOD; break;
     }
-    new BinaryInst(opcode, dst, src1, src2, bb);
+    new BinInst(opcode, dst, src1, src2, bb);
   }
 }
 
@@ -624,7 +624,7 @@ void FuncDef::typeCheck() {
   returnTypeDef = nullptr;
 }
 
-void BinaryExpr::typeCheck() {
+void BinExpr::typeCheck() {
   // Todo
   expr1->typeCheck();
   expr2->typeCheck();
@@ -633,12 +633,12 @@ void BinaryExpr::typeCheck() {
 
   if (!(type1->isValue() || type1->isBool())) {
     fprintf(
-      stderr, "BinaryExpr TypeCheck: type %s wrong ", type1->toStr().c_str());
+      stderr, "BinExpr TypeCheck: type %s wrong ", type1->toStr().c_str());
     exit(EXIT_FAILURE);
   }
   if (!(type2->isValue() || type2->isBool())) {
     fprintf(
-      stderr, "BinaryExpr TypeCheck: type %s wrong ", type2->toStr().c_str());
+      stderr, "BinExpr TypeCheck: type %s wrong ", type2->toStr().c_str());
     exit(EXIT_FAILURE);
   }
   if (op == AND || op == OR) {
@@ -651,7 +651,7 @@ void BinaryExpr::typeCheck() {
         symbolEntry->setType(TypeSys::boolType);
       }
     } else {
-      fprintf(stderr, "BinaryExpr TypeCheck: type wrong ");
+      fprintf(stderr, "BinExpr TypeCheck: type wrong ");
       exit(EXIT_FAILURE);
     }
   } else if (op >= LESS && op <= FALSEEQUAL) {
@@ -671,8 +671,7 @@ void BinaryExpr::typeCheck() {
     }
     // Error
     else {
-      fprintf(stderr,
-        "BinaryExpr TypeCheck: type %s and %s mismatch in line xx",
+      fprintf(stderr, "BinExpr TypeCheck: type %s and %s mismatch in line xx",
         type1->toStr().c_str(), type2->toStr().c_str());
       exit(EXIT_FAILURE);
     }
@@ -741,9 +740,9 @@ void IfStmt::typeCheck() {
     if (type1->isTypeInt()) {
       SymbEntry* se = new ConstSymbEntry(type1, 1);
       Const* trueExp = new Const(se);
-      cond = new BinaryExpr(
-        new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel()),
-        BinaryExpr::AND, cond, trueExp);
+      cond =
+        new BinExpr(new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel()),
+          BinExpr::AND, cond, trueExp);
     } else {
       fprintf(
         stderr, "IfStmt typeCheck: type %s wrong ", type1->toStr().c_str());
@@ -768,9 +767,9 @@ void IfElseStmt::typeCheck() {
     if (type1->isTypeInt()) {
       SymbEntry* se = new ConstSymbEntry(type1, 1);
       Const* trueExp = new Const(se);
-      cond = new BinaryExpr(
-        new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel()),
-        BinaryExpr::AND, cond, trueExp);
+      cond =
+        new BinExpr(new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel()),
+          BinExpr::AND, cond, trueExp);
     } else {
       fprintf(
         stderr, "IfElseStmt typeCheck: type %s wrong ", type1->toStr().c_str());
@@ -789,9 +788,9 @@ void WhileStmt::typeCheck() {
     if (type1->isTypeInt()) {
       SymbEntry* se = new ConstSymbEntry(type1, 1);
       Const* trueExp = new Const(se);
-      cond = new BinaryExpr(
-        new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel()),
-        BinaryExpr::AND, cond, trueExp);
+      cond =
+        new BinExpr(new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel()),
+          BinExpr::AND, cond, trueExp);
     } else {
       fprintf(
         stderr, "WhileStmt typeCheck: type %s wrong ", type1->toStr().c_str());
@@ -969,7 +968,7 @@ void UnaryExpr::output(int level) {
   expr->output(level + 4);
 }
 
-void BinaryExpr::output(int level) {
+void BinExpr::output(int level) {
   std::string op_str;
   switch (op) {
     case ADD : op_str = "add"; break;
@@ -978,7 +977,7 @@ void BinaryExpr::output(int level) {
     case OR : op_str = "or"; break;
     case LESS : op_str = "less"; break;
   }
-  fprintf(yyout, "%*cBinaryExpr\top: %s\n", level, ' ', op_str.c_str());
+  fprintf(yyout, "%*cBinExpr\top: %s\n", level, ' ', op_str.c_str());
   expr1->output(level + 4);
   expr2->output(level + 4);
 }

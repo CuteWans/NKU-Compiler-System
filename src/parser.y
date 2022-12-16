@@ -214,19 +214,19 @@ MulExp
   MulExp MUL UnaryExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::intType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::MUL, $1, $3);
+    $$ = new BinExpr(se, BinExpr::MUL, $1, $3);
   }
   |
   MulExp DIV UnaryExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::intType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::DIV, $1, $3);
+    $$ = new BinExpr(se, BinExpr::DIV, $1, $3);
   }
   |
   MulExp MOD UnaryExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::intType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::MOD, $1, $3);
+    $$ = new BinExpr(se, BinExpr::MOD, $1, $3);
   }
   ;
 
@@ -237,13 +237,13 @@ AddExp
   AddExp ADD MulExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::intType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::ADD, $1, $3);
+    $$ = new BinExpr(se, BinExpr::ADD, $1, $3);
   }
   |
   AddExp SUB MulExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::intType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::SUB, $1, $3);
+    $$ = new BinExpr(se, BinExpr::SUB, $1, $3);
   }
   ;
 
@@ -254,25 +254,25 @@ RelExp
   RelExp LESS AddExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::LESS, $1, $3);
+    $$ = new BinExpr(se, BinExpr::LESS, $1, $3);
   }
   |
   RelExp GREATER AddExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::GREATER, $1, $3);
+    $$ = new BinExpr(se, BinExpr::GREATER, $1, $3);
   }
   |
   RelExp LESSEQUAL AddExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::LESSEQUAL, $1, $3);
+    $$ = new BinExpr(se, BinExpr::LESSEQUAL, $1, $3);
   }
   |
   RelExp GREATEREQUAL AddExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::GREATEREQUAL, $1, $3);
+    $$ = new BinExpr(se, BinExpr::GREATEREQUAL, $1, $3);
   }
   ;
 EquExp
@@ -282,13 +282,13 @@ EquExp
   EquExp TRUEEQUAL RelExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::TRUEEQUAL, $1, $3);
+    $$ = new BinExpr(se, BinExpr::TRUEEQUAL, $1, $3);
   } 
   |
   EquExp FALSEEQUAL RelExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::FALSEEQUAL, $1, $3);
+    $$ = new BinExpr(se, BinExpr::FALSEEQUAL, $1, $3);
   }  
   ; 
 LAndExp
@@ -298,7 +298,7 @@ LAndExp
   LAndExp AND EquExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::AND, $1, $3);
+    $$ = new BinExpr(se, BinExpr::AND, $1, $3);
   }
   ;
 LOrExp
@@ -308,7 +308,7 @@ LOrExp
   LOrExp OR LAndExp
   {
     SymbEntry *se = new TempSymbEntry(TypeSys::boolType, SymbTable::getLabel());
-    $$ = new BinaryExpr(se, BinaryExpr::OR, $1, $3);
+    $$ = new BinExpr(se, BinExpr::OR, $1, $3);
   }
   ;
 Type

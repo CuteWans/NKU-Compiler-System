@@ -74,11 +74,11 @@ public:
   void output() const;
 };
 
-class BinaryInst : public Inst {
+class BinInst : public Inst {
 public:
-  BinaryInst(unsigned opcode, Op* dst, Op* src1, Op* src2,
+  BinInst(unsigned opcode, Op* dst, Op* src1, Op* src2,
     BasicBlock* insert_bb = nullptr);
-  ~BinaryInst();
+  ~BinInst();
   void output() const;
 
   enum { SUB, ADD, MUL, DIV, MOD, AND, OR };

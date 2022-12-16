@@ -43,7 +43,7 @@ Inst* Inst::getPrev() {
   return prev;
 }
 
-BinaryInst::BinaryInst(
+BinInst::BinInst(
   unsigned opcode, Op* dst, Op* src1, Op* src2, BasicBlock* insert_bb) :
   Inst(BINARY, insert_bb) {
   this->opcode = opcode;
@@ -55,14 +55,14 @@ BinaryInst::BinaryInst(
   src2->addUse(this);
 }
 
-BinaryInst::~BinaryInst() {
+BinInst::~BinInst() {
   operands[0]->setDef(nullptr);
   if (operands[0]->usersNum() == 0) delete operands[0];
   operands[1]->removeUse(this);
   operands[2]->removeUse(this);
 }
 
-void BinaryInst::output() const {
+void BinInst::output() const {
   std::string s1, s2, s3, op, type;
   s1 = operands[0]->toStr();
   s2 = operands[1]->toStr();

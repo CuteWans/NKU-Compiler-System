@@ -69,7 +69,7 @@ public:
   }
 };
 
-class BinaryExpr : public ExprNode {
+class BinExpr : public ExprNode {
 private:
   int op;
   ExprNode *expr1, *expr2;
@@ -91,7 +91,7 @@ public:
     FALSEEQUAL
   };
 
-  BinaryExpr(SymbEntry* se, int op, ExprNode* expr1, ExprNode* expr2) :
+  BinExpr(SymbEntry* se, int op, ExprNode* expr1, ExprNode* expr2) :
     ExprNode(se), op(op), expr1(expr1), expr2(expr2) {
     dst = new Op(se);
   }
