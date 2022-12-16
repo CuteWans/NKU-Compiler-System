@@ -936,11 +936,8 @@ void CallFunc::typeCheck() {
     return;
   }
   // 检查类型是否匹配
-  int flag = 0;
-  if (isCond == 1) {
-    isCond = 0;
-    flag = 1;
-  }
+  int flag = isCond;
+  isCond = 0;
   for (size_t i = 0; i < funcParamsTypeList.size(); ++i) {
     Type* funcType = funcParamsTypeList[i];
     Type* callType = callParamList[i]->getSymPtr()->getType();
@@ -957,9 +954,7 @@ void CallFunc::typeCheck() {
     }
     // TODO 数组维度匹配
   }
-  if (flag == 1) {
-    isCond = 1;
-  }
+  isCond = flag;
   symbolEntry->setType(((FuncType*) funcSe->getType())->getRetType());
 }
 
