@@ -24,9 +24,9 @@ protected:
   std::vector<Inst*> true_list;
   std::vector<Inst*> false_list;
   static IRBuilder* builder;
-  void backPatch(std::vector<Inst*>& list, BasicBlock* bb);
+  void backPatch(std::vector<Inst*>& list, BasicBlock* bb) const;
   std::vector<Inst*> merge(
-    std::vector<Inst*>& list1, std::vector<Inst*>& list2);
+    const std::vector<Inst*>& list1, const std::vector<Inst*>& list2) const;
 
 public:
   Node();

@@ -18,7 +18,7 @@ Node::Node() {
   seq = counter++;
 }
 
-void Node::backPatch(std::vector<Inst*>& list, BasicBlock* bb) {
+void Node::backPatch(std::vector<Inst*>& list, BasicBlock* bb) const {
   for (auto& inst : list) {
     if (inst->isCond()) dynamic_cast<CondBrInst*>(inst)->setTrueBranch(bb);
     else if (inst->isUncond()) dynamic_cast<UncondBrInst*>(inst)->setBranch(bb);
@@ -26,7 +26,7 @@ void Node::backPatch(std::vector<Inst*>& list, BasicBlock* bb) {
 }
 
 std::vector<Inst*> Node::merge(
-  std::vector<Inst*>& list1, std::vector<Inst*>& list2) {
+  const std::vector<Inst*>& list1, const std::vector<Inst*>& list2) const {
   std::vector<Inst*> res(list1);
   res.insert(res.end(), list2.begin(), list2.end());
   return res;
