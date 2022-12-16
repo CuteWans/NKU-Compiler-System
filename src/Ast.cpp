@@ -613,7 +613,8 @@ void FuncDef::typeCheck() {
     } else {
       // Todo
     }
-  } else if (returnTypeDef->getType() != returnType->getType()) {
+  } else if (!(returnTypeDef->getType() == returnType->getType() ||
+               returnTypeDef->isTypeFloat() && returnType->isValue())) {
     // 表示含有return语句
     fprintf(stderr, "FuncDef TypeCheck: type %s and %s mismatch ",
       returnTypeDef->toStr().c_str(), returnType->toStr().c_str());
@@ -947,31 +948,14 @@ void CallFunc::typeCheck() {
       fprintf(stderr, "Func params type cannot be void ");
       exit(EXIT_FAILURE);
     }
-    if (funcType->isTypeInt() && !callType->isTypeInt()) {
+    if (!(funcType->getType() == callType->getType() ||
+          funcType->isTypeFloat() && callType->isValue())) {
       fprintf(stderr,
         "CallFunc TypeCheck: funcType %s and callType %s mismatch ",
         funcType->toStr().c_str(), callType->toStr().c_str());
       exit(EXIT_FAILURE);
     }
-    if (funcType->isTypeFloat() && !callType->isValue()) {
-      fprintf(stderr,
-        "CallFunc TypeCheck: funcType %s and callType %s mismatch ",
-        funcType->toStr().c_str(), callType->toStr().c_str());
-      exit(EXIT_FAILURE);
-    }
-    if (funcType->isTypeIntArray() && !callType->isTypeIntArray()) {
-      fprintf(stderr,
-        "CallFunc TypeCheck: funcType %s and callType %s mismatch ",
-        funcType->toStr().c_str(), callType->toStr().c_str());
-      exit(EXIT_FAILURE);
-    }
-    if (funcType->isTypeFloatArray() && !callType->isTypeFloatArray()) {
-      fprintf(stderr,
-        "CallFunc TypeCheck: funcType %s and callType %s mismatch ",
-        funcType->toStr().c_str(), callType->toStr().c_str());
-      exit(EXIT_FAILURE);
-    }
-    // 数组维度匹配问题
+    // TODO 数组维度匹配
   }
   if (flag == 1) {
     isCond = 1;
