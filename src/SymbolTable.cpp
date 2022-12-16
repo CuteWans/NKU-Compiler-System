@@ -50,7 +50,7 @@ void IdSymbEntry::output() const {
     }
     fprintf(yyout, ")\n");
   } else {
-    //assert(scope==GLOBAL);
+    // assert(scope==GLOBAL);
     fprintf(yyout, "@%s = dso_local global %s %d\n", name.c_str(),
       type->toStr().c_str(), (int) value);
   }

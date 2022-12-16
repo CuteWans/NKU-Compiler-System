@@ -13,9 +13,10 @@ Func::Func(Unit* u, SymbEntry* s) {
 }
 
 Func::~Func() {
-  auto delete_list = block_list;
-  for (auto& i : delete_list) delete i;
-  parent->removeFunc(this);
+  // BUGGED
+  // auto delete_list = block_list;
+  // for (auto& i : delete_list) delete i;
+  // parent->removeFunc(this);
 }
 
 // remove the basicblock bb from its block_list.
@@ -30,7 +31,7 @@ void Func::output() const {
     yyout, "define %s %s(", retType->toStr().c_str(), sym_ptr->toStr().c_str());
   auto param = params.begin();
   if (param == params.end()) {
-    //no param
+    // no param
     fprintf(yyout, "){\n");
   } else {
     fprintf(yyout, "%s %s", (*param)->getType()->toStr().c_str(),

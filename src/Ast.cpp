@@ -74,8 +74,8 @@ void FuncDef::genCode() {
   stmt->genCode();
 
   /**
-     * Construct control flow graph. You need do set successors and predecessors for each basic block.
-     * Todo
+    * Construct control flow graph. You need do set successors and predecessors for each basic block.
+    * Todo
     */
   for (auto& block : *func) {
     for (auto i = block->begin(); i != block->rbegin(); i = i->getNext()) {
@@ -367,7 +367,7 @@ void WhileStmt::genCode() {
   cond_bb = new BasicBlock(func);
   stmt_bb = new BasicBlock(func);
   end_bb = new BasicBlock(func);
-  //used for nested while
+  // used for nested while
   this->cond_bb = cond_bb;
   this->stmt_bb = stmt_bb;
   this->end_bb = end_bb;
@@ -491,7 +491,7 @@ void ConstDeclNode::genCode() {
     addr_se->setType(new PointerType(se->getType()));
     addr = new Op(addr_se);
     se->setAddr(addr);
-    //add global defination
+    // add global defination
     if (expr != nullptr) {
       int v = ((ConstSymbEntry*) expr->getSymPtr())->getValue();
       se->setValue((float) v);
@@ -544,7 +544,7 @@ void ReturnStmt::genCode() {
   // Todo
   BasicBlock* bb = builder->getInsertBB();
   if (retValue == nullptr) {
-    //return nullptr
+    // return nullptr
     new RetInst(nullptr, bb);
     return;
   }
@@ -562,8 +562,8 @@ void AssignStmt::genCode() {
      * We haven't implemented array yet, the lval can only be ID. So we just store the result of the `expr` to the addr of the id.
      * If you want to implement array, you have to caculate the address first and then store the result into it.
      */
-  //printf("addr:%s\n",addr->toStr().c_str());
-  //printf("src:%s\n",src->toStr().c_str());
+  // printf("addr:%s\n", addr->toStr().c_str());
+  // printf("src:%s\n", src->toStr().c_str());
   new StoreInst(addr, src, bb);
 }
 
@@ -605,16 +605,16 @@ void FuncDef::typeCheck() {
   returnTypeDef = ((FuncType*) se->getType())->getRetType();
   returnType = nullptr;
   stmt->typeCheck();
-  if (returnType == nullptr) {  //表示不含有return语句
+  if (returnType == nullptr) {  // 表示不含有return语句
     if (!returnTypeDef->isVoid()) {
       fprintf(stderr, "FuncDef TypeCheck: return type %s not found ",
         returnTypeDef->toStr().c_str());
       exit(EXIT_FAILURE);
     } else {
-      //Todo
+      // Todo
     }
   } else if (returnTypeDef->getType() != returnType->getType()) {
-    //表示含有return语句
+    // 表示含有return语句
     fprintf(stderr, "FuncDef TypeCheck: type %s and %s mismatch ",
       returnTypeDef->toStr().c_str(), returnType->toStr().c_str());
     exit(EXIT_FAILURE);
@@ -643,7 +643,7 @@ void BinaryExpr::typeCheck() {
   if (op == AND || op == OR) {
     if ((type1->isTypeInt() || type1->isBool()) &&
       (type2->isTypeInt() || type2->isBool())) {
-      //symbolEntry->setType(TypeSys::intType);
+      // symbolEntry->setType(TypeSys::intType);
       if (isCond == 0) {
         symbolEntry->setType(TypeSys::intType);
       } else {
@@ -779,7 +779,7 @@ void IfElseStmt::typeCheck() {
 }
 
 void WhileStmt::typeCheck() {
-  //Todo
+  // Todo
   isCond = 1;
   cond->typeCheck();
   isCond = 0;
@@ -805,7 +805,7 @@ void WhileStmt::typeCheck() {
 }
 
 void BreakStmt::typeCheck() {
-  //Todo
+  // Todo
   if (count == 0) {
     fprintf(stderr, "Break stmt not in While stmt ");
     exit(EXIT_FAILURE);
@@ -813,7 +813,7 @@ void BreakStmt::typeCheck() {
 }
 
 void ContinueStmt::typeCheck() {
-  //Todo
+  // Todo
   if (count == 0) {
     fprintf(stderr, "Continue stmt not in While stmt ");
     exit(EXIT_FAILURE);
@@ -921,11 +921,11 @@ void NullStmt::typeCheck() { }
 
 void CallFunc::typeCheck() {
   callParamSeqNode->typeCheck();
-  //实参与形参匹配
+  // 实参与形参匹配
   std::vector<Type*> funcParamsTypeList =
     ((FuncType*) funcSe->getType())->getParamsType();
   std::vector<ExprNode*> callParamList = callParamSeqNode->getParamList();
-  //检查数目是否匹配
+  // 检查数目是否匹配
   if (funcParamsTypeList.size() != callParamList.size()) {
     fprintf(stderr, "Call params number and Func params number mismatch ");
     exit(EXIT_FAILURE);
@@ -934,7 +934,7 @@ void CallFunc::typeCheck() {
     symbolEntry->setType(((FuncType*) funcSe->getType())->getRetType());
     return;
   }
-  //检查类型是否匹配
+  // 检查类型是否匹配
   int flag = 0;
   if (isCond == 1) {
     isCond = 0;
@@ -971,7 +971,7 @@ void CallFunc::typeCheck() {
         funcType->toStr().c_str(), callType->toStr().c_str());
       exit(EXIT_FAILURE);
     }
-    //数组维度匹配问题
+    // 数组维度匹配问题
   }
   if (flag == 1) {
     isCond = 1;

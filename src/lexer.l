@@ -76,7 +76,7 @@ class ScopeTable
 class Lab4SymbTable
 {
   private:
-    //std::vector<ScopeTable> scopeTables;
+    // std::vector<ScopeTable> scopeTables;
     ScopeTable scopeTables[1000];
     int tail;
     int curScope;
@@ -91,7 +91,7 @@ class Lab4SymbTable
     {
       ScopeTable *scopeTable=new ScopeTable();
       scopeTables[tail]=*scopeTable;
-      //scopeTables.push_back(*scopeTable);
+      // scopeTables.push_back(*scopeTable);
       scopeTables[tail].setParentScope(curScope);
       curScope=tail;
       ++tail;  

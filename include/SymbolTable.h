@@ -97,7 +97,7 @@ private:
 
   int scope;
   Op* addr;  // The address of the identifier.
-  //used for global definition
+  // used for global definition
   float value;
   bool isValue = false;
   // You can add any field you need here.

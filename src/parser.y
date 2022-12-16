@@ -189,8 +189,8 @@ UnaryExp
   |
   ADD UnaryExp
   {
-    //SymbEntry *se = new TempSymbEntry($2->getOp()->getType(), SymbTable::getLabel());
-    //$$ = new UnaryExpr(se, UnaryExpr::UPLUS, $2);
+    // SymbEntry *se = new TempSymbEntry($2->getOp()->getType(), SymbTable::getLabel());
+    // $$ = new UnaryExpr(se, UnaryExpr::UPLUS, $2);
     $$ = $2;
   }
   | 
@@ -351,7 +351,7 @@ VarDecl
   :
   ID
   {
-    //重定义判断
+    // 重定义判断
     if(identifiers->lookupCur($1)!=nullptr) {
       fprintf(stderr, "identifier %s is redefined\n", $1);
       exit(EXIT_FAILURE);
