@@ -48,6 +48,8 @@ public:
   }
 
   std::string toStr() const;
+  SymbEntry * getEntry() { return se; };
+  Inst* getDef() { return def; };
 };
 
 #endif

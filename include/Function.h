@@ -64,6 +64,7 @@ public:
   SymbEntry* getSymPtr() {
     return sym_ptr;
   }
+  void genMachineCode(AsmBuilder*);
 };
 
 #endif

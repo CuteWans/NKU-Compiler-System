@@ -92,61 +92,45 @@ public:
 class IdSymbEntry : public SymbEntry {
 private:
   enum { GLOBAL, PARAM, LOCAL };
-
   std::string name;
-
   int scope;
+  int value;
+  int label;
+  bool initial;
+  bool sysy;
+  int* arrayValue;
+  bool allZero;
+  int paramNo;
+  bool constant;
   Op* addr;  // The address of the identifier.
-  // used for global definition
-  float value;
-  bool isValue = false;
-  // You can add any field you need here.
+                  // You can add any field you need here.
 
-public:
-  IdSymbEntry(Type* type, std::string name, int scope);
-  virtual ~IdSymbEntry() {};
+  public:
+  IdSymbEntry(Type* type,
+                        std::string name,
+                        int scope,
+                        int paramNo = -1,
+                        bool sysy = false);
+  virtual ~IdSymbEntry(){};
   std::string toStr();
-
-  bool isGlobal() const {
-    return scope == GLOBAL;
-  }
-
-  bool isParam() const {
-    return scope == PARAM;
-  }
-
-  bool isLocal() const {
-    return scope >= LOCAL;
-  }
-
-  bool isLibFunc() const;
-
-  int getScope() const {
-    return scope;
-  }
-
-  void setAddr(Op* addr) {
-    this->addr = addr;
-  }
-
-  Op* getAddr() {
-    return addr;
-  }
-
-  void setValue(float v) {
-    value = v;
-    isValue = true;
-  }
-
-  float getValue() {
-    return value;
-  }
-
-  std::string getName() {
-    return name;
-  }
-
-  void output() const;
+  bool isGlobal() const { return scope == GLOBAL; };
+  bool isParam() const { return scope == PARAM; };
+  bool isLocal() const { return scope >= LOCAL; };
+  bool isSysy() const { return sysy; };
+  int getScope() const { return scope; };
+  void setAddr(Op* addr) { this->addr = addr; };
+  Op* getAddr() { return addr; };
+  void setValue(int value);
+  int getValue() const { return value; };
+  void setArrayValue(int* arrayValue);
+  int* getArrayValue() const { return arrayValue; };
+  int getLabel() const { return label; };
+  void setLabel() { label = SymbTable::getLabel(); };
+  void setAllZero() { allZero = true; };
+  bool isAllZero() const { return allZero; };
+  int getParamNo() const { return paramNo; };
+  void setConst() { constant = true;};
+  bool getConst() const { return constant; };
   // You can add any function you need here.
 };
 
@@ -171,6 +155,7 @@ public:
 class TempSymbEntry : public SymbEntry {
 private:
   int label;
+  int stack_offset;
 
 public:
   TempSymbEntry(Type* type, int label);
@@ -180,7 +165,8 @@ public:
   int getLabel() const {
     return label;
   }
-
+  void setOffset(int offset) { this->stack_offset = offset; };
+  int getOffset() { return this->stack_offset; };
   // You can add any function you need here.
 };
 

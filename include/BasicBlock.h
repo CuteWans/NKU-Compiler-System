@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 #include "Instruction.h"
+#include "AsmBuilder.h"
 
 class Func;
 
@@ -89,6 +90,7 @@ public:
   int getNumOfSucc() const {
     return succ.size();
   }
+  void genMachineCode(AsmBuilder*);
 };
 
 #endif

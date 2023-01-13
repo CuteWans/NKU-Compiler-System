@@ -23,9 +23,10 @@ protected:
     PTR,
     BOOL
   };
+  int size;
 
 public:
-  Type(int kind) : kind(kind) {};
+  Type(int kind, int size = 0) : kind(kind), size(size) {};
   virtual ~Type() {};
   virtual std::string toStr() = 0;
 
@@ -101,6 +102,12 @@ public:
 
   bool isTypeFloatArray() const {
     return kind == FLOAT_ARRAY || kind == CONSTFLOAT_ARRAY;
+  }
+  int getSize() const { 
+    return size; 
+  };
+  bool isPtr() const { 
+    return kind == PTR; 
   }
 };
 
@@ -194,6 +201,29 @@ public:
   std::string toStr();
 };
 
+class ArrayType : public Type {
+  private:
+  Type* elementType;
+  Type* arrayType = nullptr;
+  int length;
+  bool constant;
+
+  public:
+  ArrayType(Type* elementType, int length, bool constant = false)
+      : Type(Type::ARRAY),
+        elementType(elementType),
+        length(length),
+        constant(constant) {
+      size = elementType->getSize() * length;
+  };
+  std::string toStr();
+  int getLength() const { return length; };
+  Type* getElementType() const { return elementType; };
+  void setArrayType(Type* arrayType) { this->arrayType = arrayType; };
+  bool isConst() const { return constant; };
+  Type* getArrayType() const { return arrayType; };
+};
+
 class PointerType : public Type {
 private:
   Type* valueType;
@@ -204,6 +234,7 @@ public:
   }
 
   std::string toStr();
+  Type* getType() const { return valueType; };
 };
 
 class TypeSys {
